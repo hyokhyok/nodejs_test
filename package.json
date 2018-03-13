@@ -17,6 +17,9 @@
   },
   "homepage": "https://github.com/hyokhyok/nodejs_test#readme",
   "dependencies": {
-    "steem": "^0.7.1"
+    "fibers": "^2.0.0",
+    "node-gyp": "^3.6.2",
+    "steem": "^0.7.1",
+    "synchronize": "^2.0.0"
   }
 }
