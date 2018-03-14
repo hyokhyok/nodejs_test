@@ -97,7 +97,11 @@ try {
         logger.info(queryResult);
         logger.info( "steem init!!" );
         // steem 데이터 조회!!
-        obj = await(steem.api.getAccounts(['hyokhyok'], defer()));
+        logger.info( process.env.NODE_ENV);
+
+        obj = await(steem.api.getAccounts(['hyokhyok'], defer()));\
+        logger.info( "test" );
+
         logger.info(obj);
     });
 } catch(err) {
