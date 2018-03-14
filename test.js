@@ -99,7 +99,7 @@ try {
         // steem 데이터 조회!!
         logger.info( process.env.NODE_ENV);
 
-        obj = await(steem.api.getAccounts(['hyokhyok'], defer()));\
+        obj = await(steem.api.getAccounts(['hyokhyok'], defer()));
         logger.info( "test" );
 
         logger.info(obj);
