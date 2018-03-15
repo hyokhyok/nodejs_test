@@ -38,6 +38,17 @@ var await = sync.await;
 var defer = sync.defer;
 // synchronize init end!
 
+//steem account set
+var voter = 'hyokhyok'
+var wif = '5JjfyUZtaUeX5Prcn9kX4JQLDwKSvk73SaUrU1P473Btjnrz3rp'   // posting key
+var title = ''
+
+var author = 'hyokhyok'
+var permlink = 're-zenigame-re-hyokhyok-test-20180314t234408838z'
+var weight = 300    // 1.0%
+
+//steem acount set end
+
 // init mysql!
 var db_config = {
    // 운영 모드.
@@ -80,6 +91,25 @@ var steem = require("steem")
 steem.api.setOptions({url: 'https://api.steemit.com'});
 // steem init! end
 
+var release = steem.api.streamBlockNumber("head", function(err, blockNumber) {
+            console.log( blockNumber);
+            steem.api.getBlock(blockNumber, function(err,  block ){
+              console.log( block.transactions[0].operations[0] );
+              var opCnt = 0;
+              for(var txIdx = 0; txIdx < block.transactions.length; txIdx++ ){
+                for(var opIdx = 0; opIdx < block.transactions[txIdx].operations.length; opIdx++ ){
+                  opCnt++;
+                  console.log( "txIdx : " + txIdx + ", opIdx : " + opIdx + ", opcnt : " + opCnt );
+                  console.log( block.transactions[txIdx].operations[opIdx] );
+                }
+              }
+              release();
+            });
+        });
+
+
+
+
 try {
     fiber(function() {
         // 실제 DB에 연결.
@@ -97,12 +127,30 @@ try {
         logger.info(queryResult);
         logger.info( "steem init!!" );
         // steem 데이터 조회!!
-        logger.info( process.env.NODE_ENV);
+      //  logger.info( process.env.NODE_ENV); 개발환경확인
 
         obj = await(steem.api.getAccounts(['hyokhyok'], defer()));
-        logger.info( "test" );
-
         logger.info(obj);
+
+        logger.info( "test1" );
+        //보팅
+
+        steem.api.getActiveVotes(author, permlink, function (err, voters) {
+          var alreadyVoted = 0
+          for (var i = 0; i < voters.length; i++) {
+              if (voters[i].voter == voter) {
+                  alreadyVoted = 1;
+              }
+          }
+          if (!alreadyVoted) {
+            var obj2 = await(steem.broadcast.vote(wif, voter, author, permlink, weight, defer()));
+            logger.info(obj2);
+          }
+          else
+              console.log('skip vote');
+        });
+
+
     });
 } catch(err) {
   logger.error(err);
